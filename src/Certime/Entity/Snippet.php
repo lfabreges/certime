@@ -1,3 +1,5 @@
+<?php
+
 /*
  * This file is part of Certime.
  *
@@ -15,27 +17,22 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$(document).ready(function() {
-    var snippets = $('#snippets'),
-        code = $('#code');
-    
-    snippets.on(
-        'click',
-        'a',
-        function(e) {
-            $(this).closest('li').addClass('active')
-                .siblings('li').removeClass('active')
-            ;
-            $.ajax({
-                url: 'index.php?controller=repository&action=snippet',
-                data: {
-                    path: $(this).attr('href').substring(1)
-                },
-                success: function(data) {
-                    code.addClass('well').html(data);
-                }
-            });
-            e.preventDefault();
-        }
-    );
-});
+namespace Certime\Entity;
+
+/**
+ * @category Certime
+ * @package  Certime_Entity
+ * @author   Ludovic Fabrèges
+ */
+class Snippet
+{
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+    public $path;
+}

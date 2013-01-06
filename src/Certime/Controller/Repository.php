@@ -19,7 +19,7 @@
 
 namespace Certime\Controller;
 
-use Certime\Repository\Snippet as SnippetRepository;
+use Certime\Repository\Theme as ThemeRepository;
 use Certime\View\ViewInterface;
 
 /**
@@ -31,8 +31,8 @@ class Repository extends AbstractController
 {
     public function indexAction()
     {
-        $snippetRepository = new SnippetRepository($this->directory);
-        $this->view->tree = $snippetRepository->getTree();
+        $themeRepository = new ThemeRepository($this->directory);
+        $this->view->themes = $themeRepository->getThemes();
         $this->view->page = 'repository';
         $this->view->render('repository');
     }

@@ -19,12 +19,15 @@
 
 namespace Certime\Repository;
 
+use Certime\Entity\Snippet as SnippetEntity;
+use Certime\Entity\Theme as ThemeEntity;
+
 /**
  * @category Certime
  * @package  Certime_Repository
  * @author   Ludovic Fabrèges
  */
-class Snippet
+class Theme
 {
     /**
      * @var string
@@ -44,25 +47,40 @@ class Snippet
     }
 
     /**
-     * Renvoie la liste des snippets du dépôt.
+     * Renvoie la liste des thèmes.
      *
-     * @return \RecursiveIteratorIterator
+     * @return array [Theme]
      */
-    public function getTree()
+    public function getThemes()
     {
+        $themes = array();
+        $currentTheme = null;
+
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveCallbackFilterIterator(
-                new \RecursiveDirectoryIterator(
-                    $this->directory,
-                    \RecursiveDirectoryIterator::KEY_AS_FILENAME | \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                ),
-                function ($current, $key, $iterator) {
-                    return $current->isDir() || 'php' === $current->getExtension();
-                }
+            new \RecursiveDirectoryIterator(
+                $this->directory,
+                \RecursiveDirectoryIterator::KEY_AS_FILENAME | \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
             ),
             \RecursiveIteratorIterator::SELF_FIRST
         );
+
         $iterator->setMaxDepth(1);
-        return $iterator;
+
+        foreach ($iterator as $fileInfo) {
+            if (0 === $iterator->getDepth() && $fileInfo->isDir()) {
+                $currentTheme = new ThemeEntity();
+                $currentTheme->name = $fileInfo->getBasename();
+                $themes[$currentTheme->name] = $currentTheme;
+            } elseif (1 === $iterator->getDepth() && null !== $currentTheme
+                && $fileInfo->isFile() && 'php' === $fileInfo->getExtension()
+            ) {
+                $snippet = new SnippetEntity();
+                $snippet->name = $fileInfo->getBasename('.php');
+                $snippet->path = $fileInfo->getRealpath();
+                $currentTheme->snippets[$snippet->name] = $snippet;
+            }
+        }
+
+        return $themes;
     }
 }
