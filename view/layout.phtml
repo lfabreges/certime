@@ -24,7 +24,7 @@
                     <ul class="nav">
                         <?php foreach (
                             array(
-                                'index' => 'Catalogue',
+                                'repository' => 'Dépôt',
                                 'codepad' => 'Codepad'
                             )
                             as $controller => $title):
@@ -44,11 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <?php echo $this->content; ?>
-        </div>
-    </div>
+    <?php echo $this->content; ?>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
     <?php if (is_array($this->js) || $this->js instanceof \Traversable):

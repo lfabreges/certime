@@ -19,16 +19,29 @@
 
 namespace Certime\Controller;
 
+use Certime\Repository\Snippet as SnippetRepository;
+use Certime\View\ViewInterface;
+
 /**
  * @category Certime
  * @package  Certime_Controller
  * @author   Ludovic Fabrèges
  */
-class Index extends AbstractController
+class Repository extends AbstractController
 {
     public function indexAction()
     {
-        $this->view->page = 'index';
-        $this->view->render('index');
+        $snippetRepository = new SnippetRepository($this->directory);
+        $this->view->tree = $snippetRepository->getTree();
+        $this->view->page = 'repository';
+        $this->view->render('repository');
+    }
+
+    public function snippetAction()
+    {
+        $path = filter_input(INPUT_GET, 'path', FILTER_CALLBACK, array('options' => 'urldecode'));
+        $this->view->setLayout(null);
+        $this->view->content = highlight_file($path, true);
+        $this->view->render('content');
     }
 }

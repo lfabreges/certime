@@ -26,6 +26,11 @@ namespace Certime\Controller;
  */
 class Codepad extends AbstractController
 {
+    /**
+     * @var string
+     */
+    protected $directory;
+
     public function indexAction()
     {
         $this->view->page = 'codepad';
@@ -35,11 +40,9 @@ class Codepad extends AbstractController
     public function evalAction()
     {
         $this->view->setLayout(null);
-
         ob_start();
         eval('?>' . filter_input(INPUT_GET, 'code'));
         $this->view->content = ob_get_clean();
-
         $this->view->render('content');
     }
 }

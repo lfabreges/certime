@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
-#codepadContainer {
-    height: 40em;
+.row-fluid.fill {
+    height: 50em;
 }
 
 #codepadEditorContainer {

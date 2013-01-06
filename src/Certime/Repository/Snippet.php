@@ -17,16 +17,14 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\Controller;
-
-use Certime\View\ViewInterface;
+namespace Certime\Repository;
 
 /**
  * @category Certime
- * @package  Certime_Controller
+ * @package  Certime_Repository
  * @author   Ludovic Fabrèges
  */
-abstract class AbstractController implements ControllerInterface
+class Snippet
 {
     /**
      * @var string
@@ -34,21 +32,37 @@ abstract class AbstractController implements ControllerInterface
     protected $directory;
 
     /**
-     * @var ViewInterface
-     */
-    protected $view;
-
-    /**
-     * Construit une instance du contrôleur.
+     * Construit une instance du dépôt.
      *
-     * @param ViewInterface $view
      * @param string $directory
      *
      * @return void
      */
-    public function __construct(ViewInterface $view, $directory)
+    public function __construct($directory)
     {
-        $this->view = $view;
         $this->directory = $directory;
+    }
+
+    /**
+     * Renvoie la liste des snippets du dépôt.
+     *
+     * @return \RecursiveIteratorIterator
+     */
+    public function getTree()
+    {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveCallbackFilterIterator(
+                new \RecursiveDirectoryIterator(
+                    $this->directory,
+                    \RecursiveDirectoryIterator::KEY_AS_FILENAME | \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                ),
+                function ($current, $key, $iterator) {
+                    return $current->isDir() || 'php' === $current->getExtension();
+                }
+            ),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+        $iterator->setMaxDepth(1);
+        return $iterator;
     }
 }

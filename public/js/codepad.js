@@ -17,20 +17,20 @@
 
 $(document).ready(function() {
     var codepadResult = $('#codepadResult'),
-        editor = ace.edit("codepadEditor");
+        editor = ace.edit('codepadEditor');
     
-    editor.setTheme("ace/theme/github");
+    editor.setTheme('ace/theme/github');
     editor.setShowPrintMargin(false);
-    editor.getSession().setMode("ace/mode/php");
+    editor.getSession().setMode('ace/mode/php');
     
     var codepadEvalFunction = function()
     {
-        if (typeof codepadEvalFunction.ajaxRequest !== "undefined") {
+        if (typeof codepadEvalFunction.ajaxRequest !== 'undefined') {
             return;
         }
         
         codepadEvalFunction.ajaxRequest = $.ajax({
-            url: "index.php?controller=codepad&action=eval",
+            url: 'index.php?controller=codepad&action=eval',
             data: {
                 code: editor.getValue()
             },

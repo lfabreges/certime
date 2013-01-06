@@ -1,0 +1,39 @@
+<?php
+
+$this->css = array(
+    'css/repository.css'
+);
+
+$this->js = array(
+    'js/repository.js'
+);
+
+?>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="well sidebar-nav">
+                <ul id="snippets" class="nav nav-list">
+                    <?php foreach ($this->tree as $name => $fileInfo):
+                        if (0 === $this->tree->getDepth()):
+                            if ($fileInfo->isDir()): ?>
+                                <li class="nav-header"><?php echo htmlspecialchars($name); ?></li>
+                            <?php endif;
+                        elseif (1 === $this->tree->getDepth()):
+                            if ($fileInfo->isFile()): ?>
+                                <li>
+                                    <a href="#<?php echo urlencode($fileInfo->getRealpath()); ?>">
+                                        <?php echo htmlspecialchars($fileInfo->getBasename('.php')); ?>
+                                    </a>
+                                </li>
+                            <?php endif;
+                        endif; ?>
+
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+        <div id="code" class="span8">
+        </div>
+    </div>
+</div>

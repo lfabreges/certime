@@ -21,28 +21,18 @@ require __DIR__ . '/../src/Certime/Loader/Loader.php';
 $loader = new \Certime\Loader\Loader(array('Certime' => __DIR__ . '/../src/Certime'));
 $loader->register();
 
-$controllerName = filter_input(
-    INPUT_GET,
-    'controller',
-    FILTER_CALLBACK,
-    array('options' => 'basename')
-);
-$controllerName = '\\Certime\\Controller\\'
-    . ucfirst(strtolower($controllerName ?: 'index'))
-;
+$controllerName = filter_input(INPUT_GET, 'controller', FILTER_CALLBACK, array('options' => 'basename'));
+$controllerName = '\\Certime\\Controller\\' . ucfirst(strtolower($controllerName ?: 'repository'));
 
-$actionName = filter_input(
-    INPUT_GET,
-    'action',
-    FILTER_CALLBACK,
-    array('options' => 'basename')
-);
+$actionName = filter_input(INPUT_GET, 'action', FILTER_CALLBACK, array('options' => 'basename'));
 $actionName = strtolower($actionName ?: 'index') . 'Action';
 
-$controller = new $controllerName(
-    new \Certime\View\Simple(__DIR__ . '/../view')
-);
-
-if (is_callable(array($controller, $actionName))) {
-    call_user_func(array($controller, $actionName));
+if (class_exists($controllerName, true)) {
+    $controller = new $controllerName(
+        new \Certime\View\Simple(__DIR__ . '/../view'),
+        __DIR__ . '/../data'
+    );
+    if (is_callable(array($controller, $actionName))) {
+        call_user_func(array($controller, $actionName));
+    }
 }
