@@ -1,0 +1,48 @@
+<?php
+
+/*
+ * This file is part of Certime.
+ *
+ * Certime is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Certime is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Certime. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace Certime\Controller;
+
+use Certime\View\ViewInterface;
+
+/**
+ * @category Certime
+ * @package  Certime_Controller
+ * @author   Ludovic Fabrèges
+ */
+abstract class AbstractController implements ControllerInterface
+{
+    /**
+     * @var ViewInterface
+     */
+    protected $view;
+
+    /**
+     * Construit une instance du contrôleur.
+     *
+     * @param ViewInterface $view
+     *
+     * @return void
+     */
+    public function __construct(ViewInterface $view)
+    {
+        $this->view = $view;
+        $this->view->controller = lcfirst(substr(strrchr(get_called_class(), '\\'), 1));
+    }
+}

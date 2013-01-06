@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Certime</title>
+    <meta name="author" content="Ludovic Fabrèges">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/certime.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+        <script src="js/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="index.php">Certime</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <?php foreach (
+                            array(
+                                'index' => 'Accueil',
+                                'codepad' => 'Codepad'
+                            )
+                            as $controller => $title):
+                        ?>
+                            <li
+                                <?php if ($controller === $this->controller): ?>
+                                    class="active"
+                                <?php endif; ?>
+                            >
+                                <a href="index.php?controller=<?php echo $controller; ?>">
+                                    <?php echo $title; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <?php echo $this->content; ?>
+        </div>
+        <hr>
+        <footer>
+            <p>&copy; Ludovic Fabrèges 2012</p>
+        </footer>
+    </div>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/certime.js"></script>
+</body>
+</html>
