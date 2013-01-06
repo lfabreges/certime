@@ -40,7 +40,7 @@ $actionName = filter_input(
 $actionName = strtolower($actionName ?: 'index') . 'Action';
 
 $controller = new $controllerName(
-    new \Certime\View\View(__DIR__ . '/../view')
+    new \Certime\View\Simple(__DIR__ . '/../view')
 );
 
 if (is_callable(array($controller, $actionName))) {

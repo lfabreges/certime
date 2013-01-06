@@ -1,12 +1,22 @@
 $(document).ready(function () {
     var codepadResult = $('#codepadResult');
-    $('#codepadText').one(
-        'keyup',
+    var editor = ace.edit("codepadEditor");
+    
+    editor.setTheme("ace/theme/github");
+    editor.setShowPrintMargin(false);
+    editor.getSession().setMode("ace/mode/php");
+    
+    editor.getSession().on(
+        'change',
         function codepadEval() {
-            $.ajax({
+            if (typeof codepadEval.ajaxRequest !== "undefined") {
+                return;
+            }
+            codepadEval.ajaxRequest = $.ajax({
                 url: "index.php?controller=codepad&action=eval",
-                data: $(this).serialize(),
-                context: $(this),
+                data: {
+                    code: editor.getValue()
+                },
                 success: function (data) {
                     if (data === "") {
                         codepadResult.removeClass("well");
@@ -16,9 +26,11 @@ $(document).ready(function () {
                     codepadResult.html(data);
                 },
                 complete: function () {
-                    $(this).one('keyup', codepadEval);
+                    delete codepadEval.ajaxRequest;
                 }
             });
         }
     );
+    
+    editor.focus();
 });

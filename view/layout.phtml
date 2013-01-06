@@ -6,6 +6,11 @@
     <meta name="author" content="Ludovic Fabrèges">
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/certime.css" rel="stylesheet">
+    <?php if (is_array($this->css) || $this->css instanceof \Traversable):
+        foreach ($this->css as $css): ?>
+            <link href="<?php echo $css; ?>" rel="stylesheet">
+        <?php endforeach;
+    endif; ?>
     <!--[if lt IE 9]>
         <script src="js/html5.js"></script>
     <![endif]-->
@@ -25,7 +30,7 @@
                             as $controller => $title):
                         ?>
                             <li
-                                <?php if ($controller === $this->controller): ?>
+                                <?php if ($controller === $this->page): ?>
                                     class="active"
                                 <?php endif; ?>
                             >
@@ -50,6 +55,10 @@
     </div>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/certime.js"></script>
+    <?php if (is_array($this->js) || $this->js instanceof \Traversable):
+        foreach ($this->js as $js): ?>
+            <script src="<?php echo $js; ?>"></script>
+        <?php endforeach;
+    endif; ?>
 </body>
 </html>

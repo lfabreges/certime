@@ -1,5 +1,17 @@
-<div class="span6">
-    <textarea id="codepadText" name="code" rows="30" class="input-block-level"></textarea>
+<?php
+
+$this->css = array(
+    'css/codepad.css'
+);
+
+$this->js = array(
+    'js/ace/ace.js',
+    'js/codepad.js'
+);
+
+?>
+<div id="codepadEditorContainer" class="span6">
+    <div id="codepadEditor"></div>
 </div>
 <div id="codepadResult" class="span6">
 </div>

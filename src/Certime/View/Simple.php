@@ -24,7 +24,7 @@ namespace Certime\View;
  * @package  Certime_View
  * @author   Ludovic Fabrèges
  */
-class View implements ViewInterface
+class Simple implements ViewInterface
 {
     /**
      * @var string
@@ -50,7 +50,7 @@ class View implements ViewInterface
     }
 
     /**
-     * @see \Certime\View\ViewInterface::render()
+     * @see ViewInterface::render()
      */
     public function render($name)
     {
@@ -71,11 +71,7 @@ class View implements ViewInterface
     }
 
     /**
-     * Change le cadre de la vue.
-     *
-     * @param string|null $layout
-     *
-     * @return self
+     * @see ViewInterface::setLayout()
      */
     public function setLayout($layout)
     {

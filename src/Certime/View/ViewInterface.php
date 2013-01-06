@@ -34,4 +34,13 @@ interface ViewInterface
      * @return self
      */
     public function render($name);
+
+    /**
+     * Change le cadre de la vue.
+     *
+     * @param string|null $layout
+     *
+     * @return self
+     */
+    public function setLayout($layout);
 }

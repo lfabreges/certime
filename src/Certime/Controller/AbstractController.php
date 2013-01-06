@@ -43,6 +43,5 @@ abstract class AbstractController implements ControllerInterface
     public function __construct(ViewInterface $view)
     {
         $this->view = $view;
-        $this->view->controller = lcfirst(substr(strrchr(get_called_class(), '\\'), 1));
     }
 }

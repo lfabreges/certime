@@ -28,6 +28,7 @@ class Index extends AbstractController
 {
     public function indexAction()
     {
+        $this->view->page = 'index';
         $this->view->render('index');
     }
 }

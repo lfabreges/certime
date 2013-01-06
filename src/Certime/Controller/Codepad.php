@@ -28,13 +28,18 @@ class Codepad extends AbstractController
 {
     public function indexAction()
     {
+        $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
 
     public function evalAction()
     {
         $this->view->setLayout(null);
-        $this->view->code = filter_input(INPUT_GET, 'code');
-        $this->view->render('eval');
+
+        ob_start();
+        eval('?>' . filter_input(INPUT_GET, 'code'));
+        $this->view->content = ob_get_clean();
+
+        $this->view->render('content');
     }
 }
