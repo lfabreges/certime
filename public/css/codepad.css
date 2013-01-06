@@ -1,8 +1,17 @@
 @CHARSET "UTF-8";
 
-#codepadEditorContainer {
+#codepadContainer {
     height: 40em;
+}
+
+#codepadEditorContainer {
+    height: 100%;
     position: relative;
+}
+
+#codepadResult {
+    height: 100%;
+    overflow: auto;
 }
 
 #codepadEditor {
