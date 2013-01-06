@@ -19,6 +19,8 @@
 
 namespace Certime\Controller;
 
+use Certime\Repository\Theme as ThemeRepository;
+
 /**
  * @category Certime
  * @package  Certime_Controller
@@ -33,6 +35,8 @@ class Codepad extends AbstractController
 
     public function indexAction()
     {
+        $themeRepository = new ThemeRepository($this->directory);
+        $this->view->themes = $themeRepository->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
@@ -44,5 +48,26 @@ class Codepad extends AbstractController
         eval('?>' . filter_input(INPUT_GET, 'code'));
         $this->view->content = ob_get_clean();
         $this->view->render('content');
+    }
+
+    public function saveAction()
+    {
+        $theme = filter_input(
+            INPUT_GET,
+            'theme',
+            FILTER_CALLBACK,
+            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
+        );
+        $snippet = filter_input(
+            INPUT_GET,
+            'snippet',
+            FILTER_CALLBACK,
+            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
+        );
+        $code = filter_input(INPUT_GET, 'code');
+
+        if (is_dir("{$this->directory}/{$theme}")) {
+            file_put_contents("{$this->directory}/{$theme}/{$snippet}.php", $code);
+        }
     }
 }

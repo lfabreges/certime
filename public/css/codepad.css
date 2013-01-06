@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.row-fluid.fill {
+#codepadContainer {
     height: 50em;
 }
 
@@ -9,7 +9,7 @@
     position: relative;
 }
 
-#codepadResult {
+#codepadResultContainer {
     height: 100%;
     overflow: auto;
 }

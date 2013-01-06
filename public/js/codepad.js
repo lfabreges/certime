@@ -16,7 +16,9 @@
  */
 
 $(document).ready(function() {
-    var codepadResult = $('#codepadResult'),
+    var codepadResultContainer = $('#codepadResultContainer'),
+        codepadSaveActionContainer = $('#codepadSaveActionContainer'),
+        codepadSaveActionSnippetName = $('#codepadSaveActionSnippetName'),
         editor = ace.edit('codepadEditor');
     
     editor.setTheme('ace/theme/github');
@@ -35,7 +37,7 @@ $(document).ready(function() {
                 code: editor.getValue()
             },
             success: function(data) {
-                codepadResult.html(data);
+                codepadResultContainer.html(data);
             },
             complete: function() {
                 delete codepadEvalFunction.ajaxRequest;
@@ -45,7 +47,22 @@ $(document).ready(function() {
         
     editor.getSession().on('change', codepadEvalFunction);
     editor.getSession().on('paste', codepadEvalFunction);
-    
     editor.focus();
     editor.insert("<?php\n\n");
+    
+    codepadSaveActionContainer.on(
+        'click',
+        'a',
+        function(e) {
+            $.ajax({
+                url: 'index.php?controller=codepad&action=save',
+                data: {
+                    theme: $(this).attr('href').substring(1),
+                    snippet: codepadSaveActionSnippetName.val(),
+                    code: editor.getValue()
+                }
+            });
+            e.preventDefault();
+        }
+    );
 });

@@ -54,8 +54,6 @@ class Simple implements ViewInterface
      */
     public function render($name)
     {
-        $name = basename($name);
-
         ob_start();
         include $this->directory . '/' . $name . '.phtml';
         $content = ob_get_clean();

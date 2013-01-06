@@ -19,7 +19,7 @@ $this->js = array(
                             <li class="nav-header"><?php echo htmlspecialchars($name); ?></li>
                             <?php foreach ($theme->snippets as $name => $snippet): ?>
                                 <li>
-                                    <a href="#<?php echo urlencode($snippet->path); ?>">
+                                    <a href="#<?php echo htmlspecialchars($snippet->path); ?>">
                                         <?php echo htmlspecialchars($name); ?>
                                     </a>
                                 </li>

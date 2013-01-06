@@ -11,11 +11,32 @@ $this->js = array(
 
 ?>
 <div class="container-fluid">
-    <div class="row-fluid fill">
-        <div id="codepadEditorContainer" class="span6">
+    <div class="row-fluid">
+        <div id="codepadSaveActionContainer" class="input-append">
+            <input id="codepadSaveActionSnippetName" class="span2" type="text">
+            <div class="btn-group">
+                <button class="btn dropdown-toggle btn-success" data-toggle="dropdown">
+                    Enregistrer...
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <?php foreach ($this->themes as $name => $theme): ?>
+                        <li>
+                            <a href="#<?php echo htmlspecialchars($name); ?>">
+                                <?php echo htmlspecialchars($name); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div id="codepadContainer" class="row-fluid">
+        <div id="codepadEditorContainer" class="span6 well">
             <div id="codepadEditor"></div>
         </div>
-        <div id="codepadResult" class="span6 well">
+        <div id="codepadResultContainer" class="span6 well">
         </div>
     </div>
 </div>

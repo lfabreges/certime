@@ -17,30 +17,28 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\Controller;
-
-use Certime\Repository\Theme as ThemeRepository;
+namespace Certime\File;
 
 /**
  * @category Certime
- * @package  Certime_Controller
+ * @package  Certime_File
  * @author   Ludovic Fabrèges
  */
-class Repository extends AbstractController
+class Filter
 {
-    public function indexAction()
+    /**
+     * Nettoie un nom de fichier.
+     *
+     * @param string $filename
+     *
+     * @return string
+     */
+    public static function sanitizeBasename($filename)
     {
-        $themeRepository = new ThemeRepository($this->directory);
-        $this->view->themes = $themeRepository->getThemes();
-        $this->view->page = 'repository';
-        $this->view->render('repository');
-    }
-
-    public function snippetAction()
-    {
-        $path = filter_input(INPUT_GET, 'path');
-        $this->view->setLayout(null);
-        $this->view->content = highlight_file($path, true);
-        $this->view->render('content');
+        return str_replace(
+            array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'),
+            '_',
+            basename($filename)
+        );
     }
 }
