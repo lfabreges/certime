@@ -17,17 +17,19 @@
 
 $(document).ready(function() {
     var codepadResultContainer = $('#codepadResultContainer'),
-        codepadSaveActionContainer = $('#codepadSaveActionContainer'),
-        codepadSaveActionSnippetName = $('#codepadSaveActionSnippetName'),
-        editor = ace.edit('codepadEditor');
+        codepadSaveActionSnippetInput = $('#codepadSaveActionSnippetInput'),
+        codepadSaveActionThemeInput = $('#codepadSaveActionThemeInput'),
+        codepadSaveActionSubmitButton = $('#codepadSaveActionSubmitButton'),
+        editor = ace.edit('codepadEditor'),
+        alert = $('#alert')
+    ;
     
     editor.setTheme('ace/theme/github');
     editor.setShowPrintMargin(false);
     editor.getSession().setMode('ace/mode/php');
     
-    var codepadEvalFunction = function()
-    {
-        if (typeof codepadEvalFunction.ajaxRequest !== 'undefined') {
+    var codepadEvalFunction = function() {
+        if ('undefined' !== typeof codepadEvalFunction.ajaxRequest) {
             return;
         }
         
@@ -50,16 +52,55 @@ $(document).ready(function() {
     editor.focus();
     editor.insert("<?php\n\n");
     
-    codepadSaveActionContainer.on(
+    var showAlert = function(message, type) {
+        if ('undefined' !== typeof showAlert.timeout) {
+            clearTimeout(showAlert.timeout);
+        }
+        alert.html(message)
+            .removeClass('alert-error alert-success alert-info')
+            .addClass(type)
+        ;
+        showAlert.timeout = setTimeout(
+            function() {
+                alert.fadeOut();
+            },
+            5000
+        );
+    };
+    
+    codepadSaveActionSubmitButton.one(
         'click',
-        'a',
-        function(e) {
+        function codepadSaveActionSubmitButtonOnClick(e) {
+            $(this).attr('disabled', 'disabled');
             $.ajax({
                 url: 'index.php?controller=codepad&action=save',
                 data: {
-                    theme: $(this).attr('href').substring(1),
-                    snippet: codepadSaveActionSnippetName.val(),
+                    theme: codepadSaveActionThemeInput.val(),
+                    snippet: codepadSaveActionSnippetInput.val(),
                     code: editor.getValue()
+                },
+                context: $(this),
+                error: function() {
+                    showAlert(
+                        "Une erreur interne empêche le bon fonctionnement de l'enregistrement.",
+                        'alert-error'
+                    );
+                },
+                success: function(data) {
+                    if (data === '') {
+                        showAlert(
+                            'Le snippet a été enregistré avec succès.',
+                            'alert-success'
+                        );
+                    } else {
+                        showAlert(data, 'alert-error');
+                    }
+                    alert.fadeIn();
+                },
+                complete: function() {
+                    $(this).removeAttr('disabled')
+                        .one('click', codepadSaveActionSubmitButtonOnClick)
+                    ;
                 }
             });
             e.preventDefault();

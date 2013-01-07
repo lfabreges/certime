@@ -27,18 +27,18 @@ namespace Certime\File;
 class Filter
 {
     /**
-     * Nettoie un nom de fichier.
+     * Désinfecte et renvoie le nom du fichier dans un chemin.
      *
-     * @param string $filename
+     * @param string $path
      *
      * @return string
      */
-    public static function sanitizeBasename($filename)
+    public static function sanitizeBasename($path)
     {
         return str_replace(
             array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'),
             '_',
-            basename($filename)
+            basename($path)
         );
     }
 }

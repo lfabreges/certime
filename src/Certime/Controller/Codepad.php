@@ -52,22 +52,43 @@ class Codepad extends AbstractController
 
     public function saveAction()
     {
-        $theme = filter_input(
-            INPUT_GET,
-            'theme',
-            FILTER_CALLBACK,
-            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-        );
+        $errors = array();
+
         $snippet = filter_input(
             INPUT_GET,
             'snippet',
             FILTER_CALLBACK,
             array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
         );
+        if (empty($snippet)) {
+            $errors[] = 'Le nom du snippet doit être renseigné.';
+        }
+
+        $theme = filter_input(
+            INPUT_GET,
+            'theme',
+            FILTER_CALLBACK,
+            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
+        );
+        if (empty($theme)) {
+            $errors[] = 'Le thème doit être renseigné.';
+        }
+
         $code = filter_input(INPUT_GET, 'code');
 
-        if (is_dir("{$this->directory}/{$theme}")) {
-            file_put_contents("{$this->directory}/{$theme}/{$snippet}.php", $code);
+        if (empty($errors)) {
+            if (is_dir("{$this->directory}/{$theme}")) {
+                if (false === file_put_contents("{$this->directory}/{$theme}/{$snippet}.php", $code)) {
+                    $errors[] = "Echec lors de l'enregistrement du snippet ; son nom est peut-être invalide.";
+                }
+            } else {
+                $errors[] = 'Le thème sélectionné est invalide.';
+            }
+        }
+
+        if (!empty($errors)) {
+            $this->view->errors = $errors;
+            $this->view->render('error');
         }
     }
 }

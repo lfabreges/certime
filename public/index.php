@@ -22,12 +22,18 @@ $loader = new \Certime\Loader\Loader(array('Certime' => __DIR__ . '/../src/Certi
 $loader->register();
 
 $controllerName = filter_input(
-    INPUT_GET, 'controller', FILTER_CALLBACK, array('options' => 'basename')
+    INPUT_GET,
+    'controller',
+    FILTER_CALLBACK,
+    array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
 );
 $controllerName = '\\Certime\\Controller\\' . ucfirst(strtolower($controllerName ?: 'repository'));
 
 $actionName = filter_input(
-    INPUT_GET, 'action', FILTER_CALLBACK, array('options' => 'basename')
+    INPUT_GET,
+    'action',
+    FILTER_CALLBACK,
+    array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
 );
 $actionName = strtolower($actionName ?: 'index') . 'Action';
 
