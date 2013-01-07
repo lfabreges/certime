@@ -17,22 +17,55 @@
 
 $(document).ready(function() {
     var snippets = $('#snippets'),
-        code = $('#code');
+        snippetCode = $('#snippetCode')
+    ;
     
     snippets.on(
         'click',
         'a',
         function(e) {
-            $(this).closest('li').addClass('active')
-                .siblings('li').removeClass('active')
-            ;
+            $(this).closest('li').addClass('active');
+            $(this).siblings('li').removeClass('active');
             $.ajax({
                 url: 'index.php?controller=repository&action=snippet',
-                data: {
-                    path: $(this).attr('href').substring(1)
+                data: $(this).attr('href').substring(1),
+                success: function(data) {
+                    snippetCode.html(data).show();
+                }
+            });
+            e.preventDefault();
+        }
+    );
+    
+    snippetCode.on(
+        'click',
+        'a',
+        function() {
+            $(this).attr('disabled', 'disabled');
+        }
+    );
+    
+    snippetCode.on(
+        'click',
+        'a.snippetDeleteButton',
+        function(e) {
+            var snippetQuery = $(this).attr('href').substring(1);
+            $.ajax({
+                url: 'index.php?controller=repository&action=delete',
+                data: snippetQuery,
+                context: $(this),
+                error: function() {
+                    $(this).removeAttr('disabled');
                 },
                 success: function(data) {
-                    code.addClass('well').html(data);
+                    var li = snippets.find('a[href="#' + snippetQuery + '"]').closest('li')
+                        liPrev = li.prev('li.nav-header')
+                    ;
+                    snippetCode.hide().empty();
+                    if (1 === liPrev.length && 0 === li.next(':not(li.nav-header)').length) {
+                        liPrev.remove();
+                    }
+                    li.remove();
                 }
             });
             e.preventDefault();

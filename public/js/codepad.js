@@ -32,7 +32,6 @@ $(document).ready(function() {
         if ('undefined' !== typeof codepadEvalFunction.ajaxRequest) {
             return;
         }
-        
         codepadEvalFunction.ajaxRequest = $.ajax({
             url: 'index.php?controller=codepad&action=eval',
             data: {
@@ -50,7 +49,10 @@ $(document).ready(function() {
     editor.getSession().on('change', codepadEvalFunction);
     editor.getSession().on('paste', codepadEvalFunction);
     editor.focus();
-    editor.insert("<?php\n\n");
+    
+    if ('' === editor.getValue()) {
+        editor.insert("<?php\n\n");
+    }
     
     var showAlert = function(message, type) {
         if ('undefined' !== typeof showAlert.timeout) {

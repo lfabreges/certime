@@ -17,11 +17,24 @@ $this->js = array(
     </div>
     <div class="row-fluid">
         <div class="form-inline">
-            <input id="codepadSaveActionSnippetInput" class="input-medium" type="text" placeholder="Snippet...">
+            <input id="codepadSaveActionSnippetInput"
+                class="input-medium"
+                type="text"
+                placeholder="Snippet..."
+                <?php if (isset($this->snippet)): ?>
+                    value="<?php echo htmlspecialchars($this->snippet); ?>"
+                <?php endif; ?>
+            >
             <select id="codepadSaveActionThemeInput">
                 <option value="">Thème...</option>
                 <?php foreach ($this->themes as $name => $theme): ?>
-                    <option><?php echo htmlspecialchars($name); ?></option>
+                    <option
+                        <?php if (isset($this->theme) && $name === $this->theme): ?>
+                            selected="selected"
+                        <?php endif; ?>
+                    >
+                        <?php echo htmlspecialchars($name); ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
             <button id="codepadSaveActionSubmitButton" type="submit" class="btn btn-success">Enregistrer</button>
@@ -30,7 +43,7 @@ $this->js = array(
     <hr>
     <div id="codepadContainer" class="row-fluid">
         <div id="codepadEditorContainer" class="span6 well">
-            <div id="codepadEditor"></div>
+            <div id="codepadEditor"><?php echo htmlspecialchars($this->code); ?></div>
         </div>
         <div id="codepadResultContainer" class="span6 well">
         </div>

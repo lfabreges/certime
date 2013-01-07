@@ -17,28 +17,38 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\File;
+namespace Certime\Filter;
 
 /**
  * @category Certime
- * @package  Certime_File
+ * @package  Certime_Filter
  * @author   Ludovic Fabrèges
  */
-class Filter
+class File
 {
     /**
-     * Désinfecte et renvoie le nom du fichier dans un chemin.
+     * Renvoie et désinfecte le nom du fichier dans un chemin contenu dans une variable externe.
      *
-     * @param string $path
+     * @param int $type
+     * @param string $variableName
      *
      * @return string
      */
-    public static function sanitizeBasename($path)
+    public static function getAndSanitizeBasename($type, $variableName)
     {
-        return str_replace(
-            array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'),
-            '_',
-            basename($path)
+        return filter_input(
+            $type,
+            $variableName,
+            FILTER_CALLBACK,
+            array(
+                'options' => function($path) {
+                    return str_replace(
+                        array('/', '\\', '?', '%', '*', ':', '|', '"', '<', '>'),
+                        '_',
+                        basename($path)
+                    );
+                }
+            )
         );
     }
 }

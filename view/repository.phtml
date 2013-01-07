@@ -1,9 +1,5 @@
 <?php
 
-$this->css = array(
-    'css/repository.css'
-);
-
 $this->js = array(
     'js/repository.js'
 );
@@ -14,13 +10,16 @@ $this->js = array(
         <div class="span4">
             <div class="well sidebar-nav">
                 <ul id="snippets" class="nav nav-list">
-                    <?php foreach ($this->themes as $name => $theme):
+                    <?php foreach ($this->themes as $themeName => $theme):
                         if ($theme->hasSnippets()): ?>
-                            <li class="nav-header"><?php echo htmlspecialchars($name); ?></li>
-                            <?php foreach ($theme->snippets as $name => $snippet): ?>
+                            <li class="nav-header"><?php echo htmlspecialchars($themeName); ?></li>
+                            <?php foreach ($theme->snippets as $snippetName => $snippet): ?>
                                 <li>
-                                    <a href="#<?php echo htmlspecialchars($snippet->path); ?>">
-                                        <?php echo htmlspecialchars($name); ?>
+                                    <?php $snippetQuery = http_build_query(
+                                        array('theme' => $themeName, 'snippet' => $snippetName), '', '&amp;'
+                                    ); ?>
+                                    <a href="#<?php echo $snippetQuery; ?>">
+                                        <?php echo htmlspecialchars($snippetName); ?>
                                     </a>
                                 </li>
                             <?php endforeach;
@@ -29,7 +28,9 @@ $this->js = array(
                 </ul>
             </div>
         </div>
-        <div id="code" class="span8">
+        <div class="span8">
+            <div id="snippetCode" class="well hide">
+            </div>
         </div>
     </div>
 </div>

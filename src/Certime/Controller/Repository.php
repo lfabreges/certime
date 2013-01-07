@@ -19,6 +19,7 @@
 
 namespace Certime\Controller;
 
+use Certime\Filter\File as FilterFile;
 use Certime\Repository\Theme as ThemeRepository;
 
 /**
@@ -38,9 +39,30 @@ class Repository extends AbstractController
 
     public function snippetAction()
     {
-        $path = filter_input(INPUT_GET, 'path');
+        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+
+        $themeRepository = new ThemeRepository($this->directory);
+        $snippet = $themeRepository->getSnippet($themeName, $snippetName);
+
         $this->view->setLayout(null);
-        $this->view->content = highlight_file($path, true);
-        $this->view->render('content');
+
+        if (false === $snippet) {
+            $this->view->content = "Le snippet demandé n'existe pas.";
+            $this->view->render('content');
+        } else {
+            $this->view->theme = $themeName;
+            $this->view->snippet = $snippetName;
+            $this->view->code = highlight_file($snippet->path, true);
+            $this->view->render('snippet');
+        }
+    }
+
+    public function deleteAction()
+    {
+        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+        $themeRepository = new ThemeRepository($this->directory);
+        $themeRepository->deleteSnippet($themeName, $snippetName);
     }
 }

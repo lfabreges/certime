@@ -21,20 +21,10 @@ require __DIR__ . '/../src/Certime/Loader/Loader.php';
 $loader = new \Certime\Loader\Loader(array('Certime' => __DIR__ . '/../src/Certime'));
 $loader->register();
 
-$controllerName = filter_input(
-    INPUT_GET,
-    'controller',
-    FILTER_CALLBACK,
-    array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-);
+$controllerName = \Certime\Filter\File::getAndSanitizeBasename(INPUT_GET, 'controller');
 $controllerName = '\\Certime\\Controller\\' . ucfirst(strtolower($controllerName ?: 'repository'));
 
-$actionName = filter_input(
-    INPUT_GET,
-    'action',
-    FILTER_CALLBACK,
-    array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-);
+$actionName = \Certime\Filter\File::getAndSanitizeBasename(INPUT_GET, 'action');
 $actionName = strtolower($actionName ?: 'index') . 'Action';
 
 if (class_exists($controllerName, true)) {

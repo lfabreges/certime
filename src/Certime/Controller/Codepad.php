@@ -19,6 +19,7 @@
 
 namespace Certime\Controller;
 
+use Certime\Filter\File as FilterFile;
 use Certime\Repository\Theme as ThemeRepository;
 
 /**
@@ -41,6 +42,25 @@ class Codepad extends AbstractController
         $this->view->render('codepad');
     }
 
+    public function editAction()
+    {
+        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+
+        $themeRepository = new ThemeRepository($this->directory);
+        $snippet = $themeRepository->getSnippet($themeName, $snippetName);
+
+        if (false !== $snippet) {
+            $this->view->theme = $themeName;
+            $this->view->snippet = $snippetName;
+            $this->view->code = file_get_contents($snippet->path);
+        }
+
+        $this->view->themes = $themeRepository->getThemes();
+        $this->view->page = 'codepad';
+        $this->view->render('codepad');
+    }
+
     public function evalAction()
     {
         $this->view->setLayout(null);
@@ -54,22 +74,12 @@ class Codepad extends AbstractController
     {
         $errors = array();
 
-        $snippet = filter_input(
-            INPUT_GET,
-            'snippet',
-            FILTER_CALLBACK,
-            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-        );
+        $theme = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
+        $snippet = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+
         if (empty($snippet)) {
             $errors[] = 'Le nom du snippet doit être renseigné.';
         }
-
-        $theme = filter_input(
-            INPUT_GET,
-            'theme',
-            FILTER_CALLBACK,
-            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-        );
         if (empty($theme)) {
             $errors[] = 'Le thème doit être renseigné.';
         }
@@ -90,5 +100,15 @@ class Codepad extends AbstractController
             $this->view->errors = $errors;
             $this->view->render('error');
         }
+    }
+
+    protected function filterInputSanitizeBasename()
+    {
+        return filter_input(
+            INPUT_GET,
+            'theme',
+            FILTER_CALLBACK,
+            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
+        );
     }
 }

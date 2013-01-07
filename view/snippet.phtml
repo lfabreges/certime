@@ -1,0 +1,17 @@
+<div class="pull-right form-inline">
+    <?php $snippetQuery = http_build_query(
+        array(
+            'theme' => $this->theme,
+            'snippet' => $this->snippet
+        ),
+        '',
+        '&amp;'
+    ); ?>
+    <a href="index.php?controller=codepad&amp;action=edit&amp;<?php echo $snippetQuery; ?>" class="btn btn-success">
+        Éditer
+    </a>
+    <a href="#<?php echo $snippetQuery; ?>" class="snippetDeleteButton btn btn-danger">
+        Supprimer
+    </a>
+</div>
+<?php echo $this->code; ?>

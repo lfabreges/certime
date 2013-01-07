@@ -49,7 +49,7 @@ class Theme
     /**
      * Renvoie la liste des thèmes.
      *
-     * @return array [Theme]
+     * @return array [ThemeEntity]
      */
     public function getThemes()
     {
@@ -82,5 +82,39 @@ class Theme
         }
 
         return $themes;
+    }
+
+    /**
+     * Renvoie un snippet.
+     *
+     * @param string $themeName
+     * @param string $snippetName
+     *
+     * @return SnippetEntity|false
+     */
+    public function getSnippet($themeName, $snippetName)
+    {
+        $themes = $this->getThemes();
+        if (isset($themes[$themeName]->snippets[$snippetName])) {
+            return $themes[$themeName]->snippets[$snippetName];
+        }
+        return false;
+    }
+
+    /**
+     * Supprimer un snippet.
+     *
+     * @param string $themeName
+     * @param string $snippetName
+     *
+     * @return bool
+     */
+    public function deleteSnippet($themeName, $snippetName)
+    {
+        $themes = $this->getThemes();
+        if (isset($themes[$themeName]->snippets[$snippetName])) {
+            return unlink($themes[$themeName]->snippets[$snippetName]->path);
+        }
+        return true;
     }
 }
