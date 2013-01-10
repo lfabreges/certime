@@ -54,22 +54,6 @@ $(document).ready(function() {
         editor.insert("<?php\n\n");
     }
     
-    var showAlert = function(message, type) {
-        if ('undefined' !== typeof showAlert.timeout) {
-            clearTimeout(showAlert.timeout);
-        }
-        alert.html(message)
-            .removeClass('alert-error alert-success alert-info')
-            .addClass(type)
-        ;
-        showAlert.timeout = setTimeout(
-            function() {
-                alert.fadeOut();
-            },
-            5000
-        );
-    };
-    
     codepadSaveActionSubmitButton.one(
         'click',
         function codepadSaveActionSubmitButtonOnClick(e) {
@@ -83,21 +67,20 @@ $(document).ready(function() {
                 },
                 context: $(this),
                 error: function() {
-                    showAlert(
+                    alert.showAlert(
                         "Une erreur interne empêche le bon fonctionnement de l'enregistrement.",
                         'alert-error'
                     );
                 },
                 success: function(data) {
                     if (data === '') {
-                        showAlert(
+                        alert.showAlert(
                             'Le snippet a été enregistré avec succès.',
                             'alert-success'
                         );
                     } else {
-                        showAlert(data, 'alert-error');
+                        alert.showAlert(data, 'alert-error');
                     }
-                    alert.fadeIn();
                 },
                 complete: function() {
                     $(this).removeAttr('disabled')

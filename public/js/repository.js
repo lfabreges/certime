@@ -17,15 +17,17 @@
 
 $(document).ready(function() {
     var snippets = $('#snippets'),
-        snippetCode = $('#snippetCode')
+        snippetCode = $('#snippetCode'),
+        alert = $('#alert')
     ;
     
     snippets.on(
         'click',
         'a',
         function(e) {
-            $(this).closest('li').addClass('active');
-            $(this).siblings('li').removeClass('active');
+            $(this).closest('li').addClass('active')
+                .siblings('li').removeClass('active')
+            ;
             $.ajax({
                 url: 'index.php?controller=repository&action=snippet',
                 data: $(this).attr('href').substring(1),
@@ -45,6 +47,13 @@ $(document).ready(function() {
         }
     );
     
+    var showSnippetDeleteAlertErrorMessage = function() {
+        alert.showAlert(
+            'Une erreur interne empêche le bon fonctionnement de la suppression.',
+            'alert-error'
+        );
+    };
+    
     snippetCode.on(
         'click',
         'a.snippetDeleteButton',
@@ -55,17 +64,23 @@ $(document).ready(function() {
                 data: snippetQuery,
                 context: $(this),
                 error: function() {
+                    showSnippetDeleteAlertErrorMessage();
                     $(this).removeAttr('disabled');
                 },
                 success: function(data) {
-                    var li = snippets.find('a[href="#' + snippetQuery + '"]').closest('li')
-                        liPrev = li.prev('li.nav-header')
-                    ;
-                    snippetCode.hide().empty();
-                    if (1 === liPrev.length && 0 === li.next(':not(li.nav-header)').length) {
-                        liPrev.remove();
+                    if ('1' === data) {
+                        var li = snippets.find('a[href="#' + snippetQuery + '"]').closest('li')
+                            liPrev = li.prev('li.nav-header')
+                        ;
+                        snippetCode.hide().empty();
+                        if (1 === liPrev.length && 0 === li.next(':not(li.nav-header)').length) {
+                            liPrev.remove();
+                        }
+                        li.remove();
+                    } else {
+                        showSnippetDeleteAlertErrorMessage();
+                        $(this).removeAttr('disabled');
                     }
-                    li.remove();
                 }
             });
             e.preventDefault();

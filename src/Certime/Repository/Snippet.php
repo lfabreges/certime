@@ -27,7 +27,7 @@ use Certime\Entity\Theme as ThemeEntity;
  * @package  Certime_Repository
  * @author   Ludovic Fabrèges
  */
-class Theme
+class Snippet
 {
     /**
      * @var string

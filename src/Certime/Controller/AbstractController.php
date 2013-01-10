@@ -31,7 +31,7 @@ abstract class AbstractController implements ControllerInterface
     /**
      * @var string
      */
-    protected $directory;
+    protected $snippetDirectory;
 
     /**
      * @var ViewInterface
@@ -42,13 +42,13 @@ abstract class AbstractController implements ControllerInterface
      * Construit une instance du contrôleur.
      *
      * @param ViewInterface $view
-     * @param string $directory
+     * @param string $snippetDirectory
      *
      * @return void
      */
-    public function __construct(ViewInterface $view, $directory)
+    public function __construct(ViewInterface $view, $snippetDirectory)
     {
         $this->view = $view;
-        $this->directory = $directory;
+        $this->snippetDirectory = $snippetDirectory;
     }
 }

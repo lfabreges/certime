@@ -20,7 +20,7 @@
 namespace Certime\Controller;
 
 use Certime\Filter\File as FilterFile;
-use Certime\Repository\Theme as ThemeRepository;
+use Certime\Repository\Snippet as SnippetRepository;
 
 /**
  * @category Certime
@@ -29,15 +29,10 @@ use Certime\Repository\Theme as ThemeRepository;
  */
 class Codepad extends AbstractController
 {
-    /**
-     * @var string
-     */
-    protected $directory;
-
     public function indexAction()
     {
-        $themeRepository = new ThemeRepository($this->directory);
-        $this->view->themes = $themeRepository->getThemes();
+        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $this->view->themes = $snippetRepository->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
@@ -47,8 +42,8 @@ class Codepad extends AbstractController
         $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
 
-        $themeRepository = new ThemeRepository($this->directory);
-        $snippet = $themeRepository->getSnippet($themeName, $snippetName);
+        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
 
         if (false !== $snippet) {
             $this->view->theme = $themeName;
@@ -56,7 +51,7 @@ class Codepad extends AbstractController
             $this->view->code = file_get_contents($snippet->path);
         }
 
-        $this->view->themes = $themeRepository->getThemes();
+        $this->view->themes = $snippetRepository->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
@@ -87,8 +82,8 @@ class Codepad extends AbstractController
         $code = filter_input(INPUT_GET, 'code');
 
         if (empty($errors)) {
-            if (is_dir("{$this->directory}/{$theme}")) {
-                if (false === file_put_contents("{$this->directory}/{$theme}/{$snippet}.php", $code)) {
+            if (is_dir("{$this->snippetDirectory}/{$theme}")) {
+                if (false === file_put_contents("{$this->snippetDirectory}/{$theme}/{$snippet}.php", $code)) {
                     $errors[] = "Echec lors de l'enregistrement du snippet ; son nom est peut-être invalide.";
                 }
             } else {

@@ -20,7 +20,7 @@
 namespace Certime\Controller;
 
 use Certime\Filter\File as FilterFile;
-use Certime\Repository\Theme as ThemeRepository;
+use Certime\Repository\Snippet as SnippetRepository;
 
 /**
  * @category Certime
@@ -31,8 +31,8 @@ class Repository extends AbstractController
 {
     public function indexAction()
     {
-        $themeRepository = new ThemeRepository($this->directory);
-        $this->view->themes = $themeRepository->getThemes();
+        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $this->view->themes = $snippetRepository->getThemes();
         $this->view->page = 'repository';
         $this->view->render('repository');
     }
@@ -42,8 +42,8 @@ class Repository extends AbstractController
         $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
 
-        $themeRepository = new ThemeRepository($this->directory);
-        $snippet = $themeRepository->getSnippet($themeName, $snippetName);
+        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
 
         $this->view->setLayout(null);
 
@@ -62,7 +62,7 @@ class Repository extends AbstractController
     {
         $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
-        $themeRepository = new ThemeRepository($this->directory);
-        $themeRepository->deleteSnippet($themeName, $snippetName);
+        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        echo $snippetRepository->deleteSnippet($themeName, $snippetName);
     }
 }
