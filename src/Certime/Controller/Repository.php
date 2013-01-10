@@ -32,22 +32,16 @@ class Repository extends AbstractController
     public function indexAction()
     {
         $snippetRepository = new SnippetRepository($this->snippetDirectory);
-        $themes = $snippetRepository->getThemes();
-        $emptyRepository = true;
-        foreach ($themes as $theme) {
+        $this->view->themes = $snippetRepository->getThemes();
+        $this->view->emptyRepository = true;
+        foreach ($this->view->themes as $theme) {
             if ($theme->hasSnippets()) {
-                $emptyRepository = false;
+                $this->view->emptyRepository = false;
                 break;
             }
         }
         $this->view->page = 'repository';
-        if ($emptyRepository) {
-            $this->view->content = 'Le dépôt est vide.';
-            $this->view->render('info');
-        } else {
-            $this->view->theme = $themes;
-            $this->view->render('repository');
-        }
+        $this->view->render('repository');
     }
 
     public function snippetAction()

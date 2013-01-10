@@ -8,36 +8,50 @@ $this->js = array(
 ?>
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span4">
-            <div class="well sidebar-nav">
-                <ul id="snippets" class="nav nav-list">
-                    <?php foreach ($this->themes as $themeName => $theme):
-                        if ($theme->hasSnippets()): ?>
-                            <li class="nav-header"><?php echo htmlspecialchars($themeName); ?></li>
-                            <?php foreach ($theme->snippets as $snippetName => $snippet): ?>
-                                <li>
-                                    <?php $snippetQuery = http_build_query(
-                                        array('theme' => $themeName, 'snippet' => $snippetName), '', '&amp;'
-                                    ); ?>
-                                    <a href="#<?php echo $snippetQuery; ?>">
-                                        <?php echo htmlspecialchars($snippetName); ?>
-                                    </a>
-                                </li>
-                            <?php endforeach;
-                        endif;
-                    endforeach; ?>
-                </ul>
-            </div>
-        </div>
-        <div class="span8">
-            <div class="row-fluid">
-                <div id="alert" class="span12 alert alert-block hide">
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div id="snippetCode" class="span12 well hide">
-                </div>
-            </div>
+        <div id="emptyRepositoryAlertInfo"
+            class="span12 alert alert-block alert-info <?php echo !$this->emptyRepository ? 'hide' : null; ?>"
+        >
+            Le dépôt est vide. Vous pouvez dès à présent commencer à réviser et enregistrer votre premier
+            snippet depuis le <a href="index.php?controller=codepad">codepad</a>.
         </div>
     </div>
+    <?php if (!$this->emptyRepository): ?>
+        <div id="repositoryContainer">
+            <div class="row-fluid">
+                <div class="span4">
+                    <div class="well sidebar-nav">
+                        <ul id="snippets" class="nav nav-list">
+                            <?php foreach ($this->themes as $themeName => $theme):
+                                if ($theme->hasSnippets()): ?>
+                                    <li class="nav-header"><?php echo htmlspecialchars($themeName); ?></li>
+                                    <?php foreach ($theme->snippets as $snippetName => $snippet): ?>
+                                        <li>
+                                            <?php $snippetQuery = http_build_query(
+                                                array('theme' => $themeName, 'snippet' => $snippetName),
+                                                '',
+                                                '&amp;'
+                                            ); ?>
+                                            <a href="#<?php echo $snippetQuery; ?>">
+                                                <?php echo htmlspecialchars($snippetName); ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach;
+                                endif;
+                            endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span8">
+                    <div class="row-fluid">
+                        <div id="alert" class="span12 alert alert-block hide">
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div id="snippetCode" class="span12 well hide">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>

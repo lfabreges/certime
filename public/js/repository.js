@@ -77,6 +77,10 @@ $(document).ready(function() {
                             liPrev.remove();
                         }
                         li.remove();
+                        if (0 === snippets.find('li').length) {
+                            $('#repositoryContainer').remove();
+                            $('#emptyRepositoryAlertInfo').show();
+                        }
                     } else {
                         showSnippetDeleteAlertErrorMessage();
                         $(this).removeAttr('disabled');
