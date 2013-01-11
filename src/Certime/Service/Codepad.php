@@ -54,14 +54,23 @@ class Codepad
      */
     public function evalCode($code)
     {
-        if (false !== ($filename = tempnam($this->tmpDirectory, 'sni'))) {
-            register_shutdown_function('unlink', $filename);
-            if (false !== file_put_contents($filename, $code)) {
-                ob_start();
-                include $filename;
-                return ob_get_clean();
+        $disabledFunctions = explode(',', ini_get('disable_functions'));
+
+        if (in_array('eval', $disabledFunctions)) {
+            if (false !== ($filename = tempnam($this->tmpDirectory, 'sni'))) {
+                register_shutdown_function('unlink', $filename);
+                if (false !== file_put_contents($filename, $code)) {
+                    ob_start();
+                    include $filename;
+                    return ob_get_clean();
+                }
             }
+        } else {
+            ob_start();
+            eval('?>' . $code);
+            return ob_get_clean();
         }
+
         throw new Exception\RuntimeException("Echec de l'exécution de la chaîne comme un code PHP");
     }
 }
