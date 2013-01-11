@@ -16,7 +16,7 @@
  */
 
 $(document).ready(function() {
-    var codepadResultContainer = $('#codepadResultContainer'),
+    var codepadResultFrame = $('#codepadResultFrame'),
         codepadSaveActionSnippetInput = $('#codepadSaveActionSnippetInput'),
         codepadSaveActionThemeInput = $('#codepadSaveActionThemeInput'),
         codepadSaveActionSubmitButton = $('#codepadSaveActionSubmitButton'),
@@ -29,21 +29,10 @@ $(document).ready(function() {
     editor.getSession().setMode('ace/mode/php');
     
     var codepadEvalFunction = function() {
-        if ('undefined' !== typeof codepadEvalFunction.ajaxRequest) {
-            return;
-        }
-        codepadEvalFunction.ajaxRequest = $.ajax({
-            url: 'index.php?controller=codepad&action=eval',
-            data: {
-                code: editor.getValue()
-            },
-            success: function(data) {
-                codepadResultContainer.html(data);
-            },
-            complete: function() {
-                delete codepadEvalFunction.ajaxRequest;
-            }
-        });
+        codepadResultFrame.attr(
+            'src',
+            'index.php?controller=codepad&action=eval&code=' + encodeURIComponent(editor.getValue())
+        );
     }
         
     editor.getSession().on('change', codepadEvalFunction);

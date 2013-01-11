@@ -47,11 +47,9 @@ class Codepad extends AbstractController
         $snippet = $repositoryService->getSnippet($themeName, $snippetName);
 
         if (false !== $snippet) {
-            $codepad = new CodepadService("{$this->dataDirectory}/tmp");
             $this->view->theme = $themeName;
             $this->view->snippet = $snippetName;
             $this->view->code = file_get_contents($snippet->path);
-            $this->view->result = $codepad->evalCode($this->view->code);
         }
 
         $this->view->themes = $repositoryService->getThemes();

@@ -46,8 +46,14 @@ $this->js = array(
         <div id="codepadEditorContainer" class="span6 well">
             <div id="codepadEditor"><?php echo htmlspecialchars($this->code); ?></div>
         </div>
-        <div id="codepadResultContainer" class="span6 well">
-            <?php echo $this->result; ?>
-        </div>
+        <iframe
+            id="codepadResultFrame"
+            class="span6 well"
+            sandbox="allow-forms allow-scripts"
+            <?php if (null !== $this->code): ?>
+                src="index.php?controller=codepad&amp;action=eval&amp;code=<?php echo urlencode($this->code); ?>"
+            <?php endif; ?>
+        >
+        </iframe>
     </div>
 </div>

@@ -9,7 +9,7 @@
     position: relative;
 }
 
-#codepadResultContainer {
+#codepadResultFrame {
     height: 100%;
     overflow: auto;
 }

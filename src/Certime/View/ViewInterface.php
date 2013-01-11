@@ -30,8 +30,9 @@ interface ViewInterface
      * Effectue le rendu de la vue.
      *
      * @param string $name
+     * @param string $layout
      *
      * @return self
      */
-    public function render($name, $layout);
+    public function render($name, $layout = 'layout');
 }
