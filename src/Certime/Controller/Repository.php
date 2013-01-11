@@ -64,10 +64,10 @@ class Repository extends AbstractController
         $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
         try {
             $repositoryService->deleteSnippet($themeName, $snippetName);
-            $this->view->render('success');
+            $this->view->render('success', null);
         } catch (\Exception $e) {
             $this->view->errors = array(rtrim($e->getMessage(), '.') . '.');
-            $this->view->render('error');
+            $this->view->render('error', null);
         }
     }
 }
