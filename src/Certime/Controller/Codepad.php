@@ -21,6 +21,7 @@ namespace Certime\Controller;
 
 use Certime\Filter\File as FilterFile;
 use Certime\Repository\Snippet as SnippetRepository;
+use Certime\Service\Codepad as CodepadService;
 
 /**
  * @category Certime
@@ -31,7 +32,7 @@ class Codepad extends AbstractController
 {
     public function indexAction()
     {
-        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
         $this->view->themes = $snippetRepository->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
@@ -39,16 +40,18 @@ class Codepad extends AbstractController
 
     public function editAction()
     {
-        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
-        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+        $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
 
-        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
         $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
 
         if (false !== $snippet) {
+            $codepad = new CodepadService("{$this->dataDirectory}/tmp");
             $this->view->theme = $themeName;
             $this->view->snippet = $snippetName;
             $this->view->code = file_get_contents($snippet->path);
+            $this->view->result = $codepad->evalCode($this->view->code);
         }
 
         $this->view->themes = $snippetRepository->getThemes();
@@ -58,10 +61,9 @@ class Codepad extends AbstractController
 
     public function evalAction()
     {
+        $codepad = new CodepadService("{$this->dataDirectory}/tmp");
         $this->view->setLayout(null);
-        ob_start();
-        eval('?>' . filter_input(INPUT_GET, 'code'));
-        $this->view->content = ob_get_clean();
+        $this->view->content = $codepad->evalCode(filter_input(INPUT_GET, 'code'));
         $this->view->render('content');
     }
 
@@ -69,8 +71,8 @@ class Codepad extends AbstractController
     {
         $errors = array();
 
-        $theme = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
-        $snippet = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+        $theme = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
+        $snippet = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
 
         if (empty($snippet)) {
             $errors[] = 'Le nom du snippet doit être renseigné.';
@@ -81,9 +83,11 @@ class Codepad extends AbstractController
 
         $code = filter_input(INPUT_GET, 'code');
 
+        // @todo Sortir l'enregistrement du contrôleur
+
         if (empty($errors)) {
-            if (is_dir("{$this->snippetDirectory}/{$theme}")) {
-                if (false === file_put_contents("{$this->snippetDirectory}/{$theme}/{$snippet}.php", $code)) {
+            if (is_dir("{$this->dataDirectory}/snippet/{$theme}")) {
+                if (false === file_put_contents("{$this->dataDirectory}/snippet/{$theme}/{$snippet}.php", $code)) {
                     $errors[] = "Echec lors de l'enregistrement du snippet ; son nom est peut-être invalide.";
                 }
             } else {

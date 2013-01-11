@@ -111,6 +111,7 @@ class Snippet
      */
     public function deleteSnippet($themeName, $snippetName)
     {
+        //@todo Dans le service ou le repository, cela a t-il du sens ?
         $themes = $this->getThemes();
         if (isset($themes[$themeName]->snippets[$snippetName])) {
             return unlink($themes[$themeName]->snippets[$snippetName]->path);

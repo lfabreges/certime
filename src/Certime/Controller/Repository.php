@@ -31,7 +31,7 @@ class Repository extends AbstractController
 {
     public function indexAction()
     {
-        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
         $this->view->themes = $snippetRepository->getThemes();
         $this->view->emptyRepository = true;
         foreach ($this->view->themes as $theme) {
@@ -46,10 +46,10 @@ class Repository extends AbstractController
 
     public function snippetAction()
     {
-        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
-        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
+        $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
 
-        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
         $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
 
         $this->view->setLayout(null);
@@ -67,9 +67,9 @@ class Repository extends AbstractController
 
     public function deleteAction()
     {
-        $themeName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'theme');
-        $snippetName = FilterFile::getAndSanitizeBasename(INPUT_GET, 'snippet');
-        $snippetRepository = new SnippetRepository($this->snippetDirectory);
+        $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
+        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
         echo $snippetRepository->deleteSnippet($themeName, $snippetName);
     }
 }

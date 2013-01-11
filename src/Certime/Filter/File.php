@@ -34,7 +34,7 @@ class File
      *
      * @return string
      */
-    public static function getAndSanitizeBasename($type, $variableName)
+    public static function getSanitizedBasename($type, $variableName)
     {
         return filter_input(
             $type,

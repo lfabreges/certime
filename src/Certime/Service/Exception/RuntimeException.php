@@ -17,38 +17,14 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\Controller;
-
-use Certime\View\ViewInterface;
+namespace Certime\Service\Exception;
 
 /**
- * @category Certime
- * @package  Certime_Controller
- * @author   Ludovic Fabrèges
+ * @category   Certime
+ * @package    Certime_Service
+ * @subpackage Exception
+ * @author     Ludovic Fabrèges
  */
-abstract class AbstractController implements ControllerInterface
+class RuntimeException extends \RuntimeException implements ExceptionInterface
 {
-    /**
-     * @var string
-     */
-    protected $dataDirectory;
-
-    /**
-     * @var ViewInterface
-     */
-    protected $view;
-
-    /**
-     * Construit une instance du contrôleur.
-     *
-     * @param ViewInterface $view
-     * @param string $dataDirectory
-     *
-     * @return void
-     */
-    public function __construct(ViewInterface $view, $dataDirectory)
-    {
-        $this->view = $view;
-        $this->dataDirectory = $dataDirectory;
-    }
 }
