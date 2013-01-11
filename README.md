@@ -1,4 +1,5 @@
 Certime
 -------
 
-Ce projet regroupe un ensemble d'exercices destinés à réviser la certification Zend PHP 5.3.
+Cet outil permet d'écrire, d'exécuter à la volée et d'enregistrer des snippets de code PHP. Il a été écrit
+pour faciliter la révision de la certification Zend PHP 5.3.
