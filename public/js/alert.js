@@ -16,26 +16,19 @@
  */
 
 $.fn.showAlert = function(message, type) {
-    var timeout = $(this).data('showAlertTimeout');
-    if (undefined !== timeout) {
-        clearTimeout(timeout);
-    }
-    $(this).html(message)
-        .removeClass('alert-error alert-success alert-info')
-        .addClass(type)
-        .stop()
-        .fadeIn()
-    ;
-    $(this).data(
-        'showAlertTimeout',
-        setTimeout(
-            $.proxy(
-                function() {
-                    $(this).fadeOut();
-                },
-                $(this)
-            ),
-            5000
-        )
-    );
+    return this.each(function() {
+        var $this = $(this),
+            timeout = $this.data('showAlertTimeout')
+        ;
+        if (undefined !== timeout) {
+            clearTimeout(timeout);
+        }
+        $this.html(message)
+            .removeClass('alert-error alert-success alert-info')
+            .addClass(type)
+            .stop()
+            .fadeIn()
+            .data('showAlertTimeout', setTimeout(function() { $this.fadeOut(); }, 5000))
+        ;
+    });
 };
