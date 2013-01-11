@@ -102,10 +102,10 @@ class Repository
     {
         foreach ($this->getThemes() as $theme) {
             if ($theme->hasSnippets()) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
