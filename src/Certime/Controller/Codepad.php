@@ -80,13 +80,13 @@ class Codepad extends AbstractController
             $errors[] = 'Le thème doit être renseigné.';
         }
 
-        $code = filter_input(INPUT_GET, 'code');
-
-        try {
-            $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
-            $repositoryService->saveSnippet($theme, $snippet, $code);
-        } catch (\Exception $e) {
-            $errors[] = rtrim($e->getMessage(), '.') . '.';
+        if (empty($errors)) {
+            try {
+                $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+                $repositoryService->saveSnippet($theme, $snippet, filter_input(INPUT_GET, 'code'));
+            } catch (\Exception $e) {
+                $errors[] = rtrim($e->getMessage(), '.') . '.';
+            }
         }
 
         if (!empty($errors)) {
