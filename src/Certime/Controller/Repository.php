@@ -20,7 +20,7 @@
 namespace Certime\Controller;
 
 use Certime\Filter\File as FilterFile;
-use Certime\Repository\Snippet as SnippetRepository;
+use Certime\Service\Repository as RepositoryService;
 
 /**
  * @category Certime
@@ -31,45 +31,43 @@ class Repository extends AbstractController
 {
     public function indexAction()
     {
-        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
-        $this->view->themes = $snippetRepository->getThemes();
-        $this->view->emptyRepository = true;
-        foreach ($this->view->themes as $theme) {
-            if ($theme->hasSnippets()) {
-                $this->view->emptyRepository = false;
-                break;
-            }
-        }
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        $this->view->themes = $repositoryService->getThemes();
+        $this->view->isEmpty = $repositoryService->isEmpty();
         $this->view->page = 'repository';
         $this->view->render('repository');
     }
 
-    public function snippetAction()
+    public function showSnippetAction()
     {
         $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
 
-        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
-        $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
-
-        $this->view->setLayout(null);
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        $snippet = $repositoryService->getSnippet($themeName, $snippetName);
 
         if (false === $snippet) {
             $this->view->content = "Le snippet demandé n'existe pas.";
-            $this->view->render('content');
+            $this->view->render('content', null);
         } else {
             $this->view->theme = $themeName;
             $this->view->snippet = $snippetName;
             $this->view->code = highlight_file($snippet->path, true);
-            $this->view->render('snippet');
+            $this->view->render('snippet', null);
         }
     }
 
-    public function deleteAction()
+    public function deleteSnippetAction()
     {
         $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
-        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
-        echo $snippetRepository->deleteSnippet($themeName, $snippetName);
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        try {
+            $repositoryService->deleteSnippet($themeName, $snippetName);
+            $this->view->render('success');
+        } catch (\Exception $e) {
+            $this->view->errors = array(rtrim($e->getMessage(), '.') . '.');
+            $this->view->render('error');
+        }
     }
 }

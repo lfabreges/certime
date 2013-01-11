@@ -20,8 +20,8 @@
 namespace Certime\Controller;
 
 use Certime\Filter\File as FilterFile;
-use Certime\Repository\Snippet as SnippetRepository;
 use Certime\Service\Codepad as CodepadService;
+use Certime\Service\Repository as RepositoryService;
 
 /**
  * @category Certime
@@ -32,8 +32,8 @@ class Codepad extends AbstractController
 {
     public function indexAction()
     {
-        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
-        $this->view->themes = $snippetRepository->getThemes();
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        $this->view->themes = $repositoryService->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
@@ -43,8 +43,8 @@ class Codepad extends AbstractController
         $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
         $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
 
-        $snippetRepository = new SnippetRepository("{$this->dataDirectory}/snippet");
-        $snippet = $snippetRepository->getSnippet($themeName, $snippetName);
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        $snippet = $repositoryService->getSnippet($themeName, $snippetName);
 
         if (false !== $snippet) {
             $codepad = new CodepadService("{$this->dataDirectory}/tmp");
@@ -54,17 +54,16 @@ class Codepad extends AbstractController
             $this->view->result = $codepad->evalCode($this->view->code);
         }
 
-        $this->view->themes = $snippetRepository->getThemes();
+        $this->view->themes = $repositoryService->getThemes();
         $this->view->page = 'codepad';
         $this->view->render('codepad');
     }
 
     public function evalAction()
     {
-        $codepad = new CodepadService("{$this->dataDirectory}/tmp");
-        $this->view->setLayout(null);
-        $this->view->content = $codepad->evalCode(filter_input(INPUT_GET, 'code'));
-        $this->view->render('content');
+        $codepadService = new CodepadService("{$this->dataDirectory}/tmp");
+        $this->view->content = $codepadService->evalCode(filter_input(INPUT_GET, 'code'));
+        $this->view->render('content', null);
     }
 
     public function saveAction()
@@ -83,31 +82,16 @@ class Codepad extends AbstractController
 
         $code = filter_input(INPUT_GET, 'code');
 
-        // @todo Sortir l'enregistrement du contrôleur
-
-        if (empty($errors)) {
-            if (is_dir("{$this->dataDirectory}/snippet/{$theme}")) {
-                if (false === file_put_contents("{$this->dataDirectory}/snippet/{$theme}/{$snippet}.php", $code)) {
-                    $errors[] = "Echec lors de l'enregistrement du snippet ; son nom est peut-être invalide.";
-                }
-            } else {
-                $errors[] = 'Le thème sélectionné est invalide.';
-            }
+        try {
+            $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+            $repositoryService->saveSnippet($theme, $snippet, $code);
+        } catch (\Exception $e) {
+            $errors[] = rtrim($e->getMessage(), '.') . '.';
         }
 
         if (!empty($errors)) {
             $this->view->errors = $errors;
-            $this->view->render('error');
+            $this->view->render('error', null);
         }
-    }
-
-    protected function filterInputSanitizeBasename()
-    {
-        return filter_input(
-            INPUT_GET,
-            'theme',
-            FILTER_CALLBACK,
-            array('options' => array('\\Certime\\File\\Filter', 'sanitizeBasename'))
-        );
     }
 }

@@ -24,17 +24,12 @@ namespace Certime\View;
  * @package  Certime_View
  * @author   Ludovic Fabrèges
  */
-class Simple implements ViewInterface
+class Standard implements ViewInterface
 {
     /**
      * @var string
      */
     protected $directory;
-
-    /**
-     * @var string
-     */
-    protected $layout;
 
     /**
      * Construit une instance de la vue.
@@ -46,34 +41,24 @@ class Simple implements ViewInterface
     public function __construct($directory)
     {
         $this->directory = $directory;
-        $this->layout = 'layout';
     }
 
     /**
      * @see ViewInterface::render()
      */
-    public function render($name)
+    public function render($name, $layout = 'layout')
     {
         ob_start();
         include $this->directory . '/' . $name . '.phtml';
         $content = ob_get_clean();
 
-        if (null !== $this->layout && $name !== $this->layout) {
+        if (null !== $layout && $name !== $layout) {
             $this->content = $content;
-            $this->render($this->layout);
+            $this->render($layout, $layout);
         } else {
             echo $content;
         }
 
-        return $this;
-    }
-
-    /**
-     * @see ViewInterface::setLayout()
-     */
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
         return $this;
     }
 

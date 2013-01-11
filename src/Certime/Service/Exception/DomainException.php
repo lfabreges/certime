@@ -17,21 +17,14 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\View;
+namespace Certime\Service\Exception;
 
 /**
- * @category Certime
- * @package  Certime_View
- * @author   Ludovic Fabrèges
+ * @category   Certime
+ * @package    Certime_Service
+ * @subpackage Exception
+ * @author     Ludovic Fabrèges
  */
-interface ViewInterface
+class DomainException extends \DomainException implements ExceptionInterface
 {
-    /**
-     * Effectue le rendu de la vue.
-     *
-     * @param string $name
-     *
-     * @return self
-     */
-    public function render($name, $layout);
 }

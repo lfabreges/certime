@@ -32,14 +32,14 @@ class Theme
     public $name;
 
     /**
-     * @var array [Snippet]
+     * @var array
      */
     public $snippets = array();
 
     /**
      * Le thème a t-il des snippets ?
      *
-     * @return boolean
+     * @return bool
      */
     public function hasSnippets()
     {

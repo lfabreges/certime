@@ -29,7 +29,7 @@ $actionName = strtolower($actionName ?: 'index') . 'Action';
 
 if (class_exists($controllerName, true)) {
     $controller = new $controllerName(
-        new \Certime\View\Simple(__DIR__ . '/../view'),
+        new \Certime\View\Standard(__DIR__ . '/../view'),
         __DIR__ . '/../data'
     );
     if (is_callable(array($controller, $actionName))) {

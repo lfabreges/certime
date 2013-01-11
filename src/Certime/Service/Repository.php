@@ -17,17 +17,17 @@
  * along with Certime. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Certime\Repository;
+namespace Certime\Service;
 
 use Certime\Entity\Snippet as SnippetEntity;
 use Certime\Entity\Theme as ThemeEntity;
 
 /**
  * @category Certime
- * @package  Certime_Repository
+ * @package  Certime_Service
  * @author   Ludovic Fabrèges
  */
-class Snippet
+class Repository
 {
     /**
      * @var string
@@ -35,7 +35,12 @@ class Snippet
     protected $directory;
 
     /**
-     * Construit une instance du dépôt.
+     * @var array
+     */
+    protected $themes;
+
+    /**
+     * Construit une instance du service.
      *
      * @param string $directory
      *
@@ -49,11 +54,15 @@ class Snippet
     /**
      * Renvoie la liste des thèmes.
      *
-     * @return array [ThemeEntity]
+     * @return array
      */
     public function getThemes()
     {
-        $themes = array();
+        if (null !== $this->themes) {
+            return $this->themes;
+        }
+
+        $this->themes = array();
         $currentTheme = null;
 
         $iterator = new \RecursiveIteratorIterator(
@@ -70,7 +79,7 @@ class Snippet
             if (0 === $iterator->getDepth() && $fileInfo->isDir()) {
                 $currentTheme = new ThemeEntity();
                 $currentTheme->name = $fileInfo->getBasename();
-                $themes[$currentTheme->name] = $currentTheme;
+                $this->themes[$currentTheme->name] = $currentTheme;
             } elseif (1 === $iterator->getDepth() && null !== $currentTheme
                 && $fileInfo->isFile() && 'php' === $fileInfo->getExtension()
             ) {
@@ -81,7 +90,22 @@ class Snippet
             }
         }
 
-        return $themes;
+        return $this->themes;
+    }
+
+    /**
+     * Le dépôt est-il vide ?
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        foreach ($this->getThemes() as $theme) {
+            if ($theme->hasSnippets()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -102,20 +126,46 @@ class Snippet
     }
 
     /**
-     * Supprimer un snippet.
+     * Enregistre un snippet.
+     *
+     * @param string $themeName
+     * @param string $snippetName
+     * @param string $code
+     *
+     * @return self
+     *
+     * @throws Exception\DomainException  si le thème est invalide.
+     * @throws Exception\RuntimeException si l'enregistrement du snippet est un échec.
+     */
+    public function saveSnippet($themeName, $snippetName, $code)
+    {
+        if (!is_dir("{$this->directory}/{$themeName}")) {
+            throw new Exception\DomainException('Le thème est invalide');
+        }
+        if (false === file_put_contents("{$this->directory}/{$themeName}/{$snippetName}.php", $code)) {
+            throw new Exception\RuntimeException("Echec lors de l'enregistrement du snippet");
+        }
+        return $this;
+    }
+
+    /**
+     * Supprime un snippet.
      *
      * @param string $themeName
      * @param string $snippetName
      *
-     * @return bool
+     * @return self
+     *
+     * @throws Exception\RuntimeException si la suppression du snippet est un échec.
      */
     public function deleteSnippet($themeName, $snippetName)
     {
-        //@todo Dans le service ou le repository, cela a t-il du sens ?
         $themes = $this->getThemes();
         if (isset($themes[$themeName]->snippets[$snippetName])) {
-            return unlink($themes[$themeName]->snippets[$snippetName]->path);
+            if (false === unlink($themes[$themeName]->snippets[$snippetName]->path)) {
+                throw new Exception\RuntimeException('Echec lors de la suppression du snippet');
+            }
         }
-        return true;
+        return $this;
     }
 }

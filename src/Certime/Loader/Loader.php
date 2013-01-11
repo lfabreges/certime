@@ -29,7 +29,7 @@ require_once __DIR__ . '/LoaderInterface.php';
 class Loader implements LoaderInterface
 {
     /**
-     * @var array [namespace, directory]
+     * @var array
      */
     protected $namespaces = array();
 

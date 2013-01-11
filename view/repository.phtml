@@ -9,13 +9,13 @@ $this->js = array(
 <div class="container-fluid">
     <div class="row-fluid">
         <div id="emptyRepositoryAlertInfo"
-            class="span12 alert alert-block alert-info <?php echo !$this->emptyRepository ? 'hide' : null; ?>"
+            class="span12 alert alert-block alert-info <?php echo !$this->isEmpty ? 'hide' : null; ?>"
         >
             Le dépôt est vide. Vous pouvez dès à présent commencer à réviser et enregistrer votre premier
             snippet depuis le <a href="index.php?controller=codepad">codepad</a>.
         </div>
     </div>
-    <?php if (!$this->emptyRepository): ?>
+    <?php if (!$this->isEmpty): ?>
         <div id="repositoryContainer">
             <div class="row-fluid">
                 <div class="span4">

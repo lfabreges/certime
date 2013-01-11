@@ -29,7 +29,7 @@ $(document).ready(function() {
                 .siblings('li').removeClass('active')
             ;
             $.ajax({
-                url: 'index.php?controller=repository&action=snippet',
+                url: 'index.php?controller=repository&action=showSnippet',
                 data: $(this).attr('href').substring(1),
                 success: function(data) {
                     snippetCode.html(data).show();
@@ -60,7 +60,7 @@ $(document).ready(function() {
         function(e) {
             var snippetQuery = $(this).attr('href').substring(1);
             $.ajax({
-                url: 'index.php?controller=repository&action=delete',
+                url: 'index.php?controller=repository&action=deleteSnippet',
                 data: snippetQuery,
                 context: $(this),
                 error: function() {

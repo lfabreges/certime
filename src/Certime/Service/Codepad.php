@@ -32,7 +32,7 @@ class Codepad
     protected $tmpDirectory;
 
     /**
-     * Construit une instance du codepad.
+     * Construit une instance du service.
      *
      * @param string $tmpDirectory
      *
@@ -50,7 +50,7 @@ class Codepad
      *
      * @return string
      *
-     * @throws Exception\RuntimeException si l'exécution de la chaîne comme un code PHP est impossible.
+     * @throws Exception\RuntimeException si l'exécution de la chaîne comme un code PHP est un échec.
      */
     public function evalCode($code)
     {
@@ -62,8 +62,6 @@ class Codepad
                 return ob_get_clean();
             }
         }
-        throw new Exception\RuntimeException(
-            "L'exécution de la chaîne comme un code PHP est impossible"
-        );
+        throw new Exception\RuntimeException("Echec de l'exécution de la chaîne comme un code PHP");
     }
 }
