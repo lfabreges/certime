@@ -49,7 +49,7 @@ class Codepad extends AbstractController
         if (false !== $snippet) {
             $this->view->theme = $themeName;
             $this->view->snippet = $snippetName;
-            $this->view->code = file_get_contents($snippet->path);
+            $this->view->code = $snippet->getCode();
         }
 
         $this->view->themes = $repositoryService->getThemes();
@@ -57,11 +57,26 @@ class Codepad extends AbstractController
         $this->view->render('codepad');
     }
 
-    public function evalAction()
+    public function evalCodeAction()
     {
         $codepadService = new CodepadService("{$this->dataDirectory}/tmp");
         $this->view->content = $codepadService->evalCode(filter_input(INPUT_GET, 'code'));
         $this->view->render('content', null);
+    }
+
+    public function evalSnippetAction()
+    {
+        $themeName = FilterFile::getSanitizedBasename(INPUT_GET, 'theme');
+        $snippetName = FilterFile::getSanitizedBasename(INPUT_GET, 'snippet');
+
+        $repositoryService = new RepositoryService("{$this->dataDirectory}/repository");
+        $snippet = $repositoryService->getSnippet($themeName, $snippetName);
+
+        if (false !== $snippet) {
+            $codepadService = new CodepadService("{$this->dataDirectory}/tmp");
+            $this->view->content = $codepadService->evalCode($snippet->getCode());
+            $this->view->render('content', null);
+        }
     }
 
     public function saveAction()

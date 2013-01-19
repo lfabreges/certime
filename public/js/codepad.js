@@ -31,7 +31,7 @@ $(document).ready(function() {
     var codepadEvalFunction = function() {
         codepadResultFrame.attr(
             'src',
-            'index.php?controller=codepad&action=eval&code=' + encodeURIComponent(editor.getValue())
+            'index.php?controller=codepad&action=evalCode&code=' + encodeURIComponent(editor.getValue())
         );
     }
         

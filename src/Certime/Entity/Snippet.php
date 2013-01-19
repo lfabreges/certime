@@ -35,4 +35,14 @@ class Snippet
      * @var string
      */
     public $path;
+
+    /**
+     * Renvoie le code du snippet.
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return file_get_contents($this->path);
+    }
 }

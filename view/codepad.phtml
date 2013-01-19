@@ -51,7 +51,7 @@ $this->js = array(
             class="span6 well"
             sandbox="allow-forms allow-scripts"
             <?php if (null !== $this->code): ?>
-                src="index.php?controller=codepad&amp;action=eval&amp;code=<?php echo urlencode($this->code); ?>"
+                src="index.php?controller=codepad&amp;action=evalCode&amp;code=<?php echo urlencode($this->code); ?>"
             <?php endif; ?>
         >
         </iframe>
